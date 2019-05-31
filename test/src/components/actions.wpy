@@ -1,0 +1,25 @@
+<template>
+    <view class="actions">
+        <view @tap="required">作为必填项</view>
+        <view @tap="required">作为选填项</view>
+        <view @tap="required">确定</view>
+        <view @tap="required">取消</view>
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+
+
+export default class Actions extends wepy.component {
+    methods={
+        required(){
+            this.$emit('hide')
+        }
+    }
+}
+</script>
+
+<style>
+
+</style>

@@ -1,0 +1,34 @@
+[
+    {
+        "id":1,
+        "title":"机动车驾驶证遗失的，机动车驾驶人应当向哪里的车辆管理所申请补发？",
+        "answer":[{
+            "checked":false,"check":false,"test":"A.核发地"
+        },{"checked":false,"check":false,"test":"B.暂住地"},{"checked":false,"check":false,"test":"C.居住地"},{"checked":false,"check":false,"test":"D.户籍地"}],
+        "key":"A.核发地"
+    },
+    {
+        "id":2,
+        "title":"驾驶机动车不能进入红色叉形灯或者红色箭头灯亮的车道。",
+        "answer":[{"checked":false,"check":false,"test":"A.正确"},{"checked":false,"check":false,"test":"B.错误"}],
+        "key":"A.正确"
+    },
+    {
+        "id":3,
+        "title":"在路口遇有交通信号灯和交通警察指挥不一致时，按照交通信号灯通行。",
+        "answer":[{"checked":false,"check":false,"test":"A.正确"},{"checked":false,"check":false,"test":"B.错误"}],
+        "key":"A.正确"
+    },
+    {
+        "id":4,
+        "title":"驾驶人未携带哪种证件驾驶机动车上路，交通警察可依法扣留车辆",
+        "answer":[{"checked":false,"check":false,"test":"A.机动车行驶证"},{"checked":false,"check":false,"test":"B.居民身份证"},{"test":"C.从业资格证"},{"test":"D.机动车通行证"}],
+        "key":"D.机动车通行证"
+    },
+    {
+        "id":5,
+        "title":"行车中发现前方道路拥堵时，应怎样做？",
+        "answer":[{"checked":false,"check":false,"test":"A.寻找机会超越前车"},{"checked":false,"check":false,"test":"B.从车辆空间穿插通过"},{"checked":false,"check":false,"test":"C.减速停车，依次排队等候"},{"checked":false,"check":false,"test":"D.鸣喇叭催促"}],
+        "key":"C.减速停车，依次排队等候"
+    }
+]

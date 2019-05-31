@@ -1,0 +1,78 @@
+<template>
+    <view>
+        <view class="shopStore">
+            <checkbox-group @change="checkboxChange({{shopData.checked}})">
+                <label class="checkbox">
+                    <checkbox value="" checked="{{shopData.checked}}" />
+                    {{shopData.shop}}
+                </label>
+            </checkbox-group>
+            <view class="item">
+                <repeat for="{{shopData.list}}" index="i">
+                    <Item :item.sync="item" :parIndex="index" :index="i" />
+                </repeat>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import Item from './item';
+import {connect} from 'wepy-redux';
+import {CHANGE_ALL_CHECKED,GET_SHOPCAR_DATA} from '../store/types/shopCar';
+@connect(
+    {
+        shopCarData(state){
+            return state.ShopStore.shopCarData
+        },
+        allChecked(state){
+            return state.ShopStore.allChecked
+        }
+    },
+    {
+        chanegAllChecked:CHANGE_ALL_CHECKED,
+        changeShopCarData:GET_SHOPCAR_DATA
+    }
+)
+export default class ShopStore extends wepy.component {
+    props={
+        shopData:Object,
+        index:Number
+    }
+    components={
+        Item
+    }
+    events={
+        //商铺选中
+        shopCheckAll(checked){
+            this.shopCarData[this.index].checked=checked;
+            this.methods.changeShopCarData(this.shopCarData);
+        }
+    }
+    methods={
+        //点击每一个商铺
+        checkboxChange(checked){
+            this.shopCarData[this.index].checked=!checked;
+            this.shopCarData[this.index].list.map(item=>{
+                item.checked=!checked;
+            })
+            this.methods.changeShopCarData(this.shopCarData);
+            //使其全选选中
+            this.$emit('checkAll',this.shopCarData.every(item=>item.checked))  
+            //调用计算          
+            this.$emit('total')
+            
+        }
+    }
+}
+</script>
+
+<style>
+.item{
+    margin-left: 20px;
+}
+.checkbox{
+    font-size: 30rpx;
+}
+</style>

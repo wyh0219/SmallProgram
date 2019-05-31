@@ -1,0 +1,19 @@
+<template>
+    <view class="choose">单项选择，请选择正确答案</view>
+</template>
+
+<script>
+import wepy from 'wepy'
+export default class Choose extends wepy.component {
+
+}
+</script>
+
+<style>
+.choose{
+    height: 40px;
+    line-height: 40px;
+    background: #6196eb;
+    color: #fff;
+}
+</style>

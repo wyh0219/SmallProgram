@@ -1,0 +1,135 @@
+<style>
+page{
+    width: 100%;
+    height: 100%;
+}
+.box{
+    width: 100%;
+    height: 100%;
+}
+</style>
+<template>
+    <view class="box">
+        <view class="shop-list">
+            <repeat for="{{shopCarData}}">
+                <shopStore :shopData.sync="item" :index="index" />
+            </repeat>
+     </view>
+        <view class="allChecked">
+            <checkbox-group @change="checkboxChange({{allChecked}})">
+                <label class="checkbox">
+                    <checkbox value="all" checked="{{allChecked}}" />
+                    全选
+                </label>
+            </checkbox-group>
+        </view>
+        <view>
+            <view>一共：{{count}}件</view>
+            <view>￥{{price}}元</view>
+        </view>
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import {connect} from 'wepy-redux';
+import shopStore from '../components/shopStore'
+import {getShopData} from '../store/actions/shopCar';
+import {CHANGE_ALL_CHECKED,GET_SHOPCAR_DATA,CHANGE_TOTAL} from '../store/types/shopCar'
+@connect(
+    {
+        shopCarData(state){            
+            return state.ShopStore.shopCarData
+        },
+        allChecked(state){
+            return state.ShopStore.allChecked
+        },
+        count(state){
+            return state.ShopStore.count
+        },
+        price(state){
+            return state.ShopStore.price
+        }
+    },
+    {
+        getShopData,
+        chanegAllChecked:CHANGE_ALL_CHECKED,
+        changeShopCarData:GET_SHOPCAR_DATA,
+        changeTotal:CHANGE_TOTAL
+    }
+)
+
+export default class shopCar extends wepy.page {
+    data={
+        allData:[]
+    }
+    components={
+        shopStore,
+    }
+    events={
+        checkAll(checked){
+            this.allChecked=checked           
+            this.methods.chanegAllChecked(this.allChecked);
+        },
+        total(){
+            this.count=0;
+            this.price=0;
+            this.shopCarData.forEach(item=>{
+                item.list.forEach(val=>{
+                    if(val.checked){
+                        this.count+=val.count;
+                        this.price+=val.count*val.price
+                    }
+                })
+            })
+            let obj={
+                count:this.count,
+                price:this.price,
+            }
+            this.methods.changeTotal(obj)
+        }
+    }
+    methods={
+        //点击总的全选
+        checkboxChange(checked){
+            this.allChecked=!checked
+            this.methods.chanegAllChecked(this.allChecked);
+            this.shopCarData.map(item=>{
+                item.checked=this.allChecked;
+                item.list.forEach(val=>{
+                    val.checked=this.allChecked
+                })
+            })
+            this.$emit('total')           
+            this.methods.changeShopCarData(this.shopCarData);
+            
+        },
+         
+    }
+    onReady(){
+        wx.request({
+            url:"http://localhost:8080/data/data.json",
+            success:(res)=>{    
+                this.allData=res.data;
+                this.$apply();
+                this.allData.forEach(item=>{
+                    item.list.forEach(val=>{
+                        if(val.checked){
+                            this.count+=val.count;
+                            this.price+=val.count*val.price
+                        }
+                    })
+                })                
+                
+                let obj={
+                    count:this.count,
+                    price:this.price,
+                }
+                this.methods.changeTotal(obj)
+            }
+        })
+        this.methods.getShopData('http://localhost:8080/data/data.json');
+    }
+}
+</script>
+

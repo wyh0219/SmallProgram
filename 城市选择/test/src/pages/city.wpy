@@ -1,0 +1,112 @@
+<template>
+    <view class="box">
+        <input value="{{cityName}}" placeholder="输入您要搜索的城市" @input="getValue" @focus="isShow"  />
+        <view>
+            <repeat for="{{searchData}}" wx:if="{{searchData.length>0}}">
+                <view>
+                    {{item.name}}
+                </view>
+            </repeat>
+        </view>
+        <view wx:if="{{show}}">
+            <view class="nav">
+                <repeat for="{{cityData}}" index='key'>
+                    <view @tap="changeLetter({{key}})">
+                        <text class="{{letter ===key?'active':''}}">{{key}}</text>
+                    </view>
+                </repeat>
+            </view>
+            <view class="content">
+                <repeat for="{{cityData}}" index='key'>
+                    <Item wx:if="{{key===letter}}" :cont.sync="item" />
+                </repeat>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import Item from '../components/item';
+export default class City extends wepy.page {
+    data={
+        show:false,
+        cityName:'',
+        cityData:{},
+        searchData:[],
+        letter:"热门城市",
+        filtData:[]
+    }
+    components={
+        Item
+    }
+    methods={
+        getValue(e){
+            this.searchData=[];
+            this.cityName=e.detail.value;
+            if(this.cityName!==""){
+                for(var i in this.cityData){
+                    if(i!=='热门城市'){
+                        for(var key in this.cityData[i]){
+                            this.cityData[i][key].forEach(item=>{
+                                if(item.letter.search(e.detail.value)!==-1 || item.name.search(e.detail.value)!==-1){
+                                    this.searchData.push(item)
+                                }
+                            })
+                                            
+                        }
+                    
+                    }
+                    
+                }
+            }
+            
+        },
+        changeLetter(letter){
+            this.letter=letter
+            this.show=true;
+        },
+        isShow(){
+            this.show=true;
+        }
+       
+    }
+    onReady(){
+       wx.request({
+           url:'http://localhost:8080/data/city.json',
+           success:(res)=>{
+               this.cityData=res.data;
+               this.$apply();
+           }
+       })
+    }
+}
+</script>
+
+<style>
+.active{
+    color: red;
+}
+page{
+     width: 100%;
+    height: 100%;
+}
+input{
+    width: 80%;
+    border: 1px solid #ccc;
+    height: 44px;
+    padding: 0 10px;
+}
+.box{
+    width: 100%;
+    height: 100%;
+}
+.nav{
+    width: 100%;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 30rpx;
+}
+</style>

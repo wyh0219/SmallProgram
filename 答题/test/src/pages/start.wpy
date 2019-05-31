@@ -1,0 +1,24 @@
+<template>
+    <view @tap="goTest">开始答题</view>
+</template>
+
+<script>
+import wepy from 'wepy'
+export default class Start extends wepy.page {
+    methods={
+        goTest(){
+            wx.navigateTo({
+                url:"/pages/test"
+            })
+            wx.setStorage({
+                key:"time",
+                data:new Date().getTime()
+            })
+        }
+    }
+}
+</script>
+
+<style>
+
+</style>

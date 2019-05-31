@@ -1,0 +1,40 @@
+<template>
+    <view class="list">
+        <repeat for="{{cont}}" index="key">
+            <view class="cont" wx:if="{{!item.name}}">
+                <text>{{key}}</text>
+                <repeat for="{{item}}" item="val">
+                    <view class="city">{{val.name}}</view>
+                </repeat>
+            </view>
+            <text class="city" wx:else>{{item.name}}</text>
+        </repeat>
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+export default class Item extends wepy.component {
+    props={
+        cont:Array
+    }
+    onReady(){
+        console.log(this.cont)
+    }
+}
+</script>
+
+<style>
+
+.city{
+    margin: 0 6px;
+}
+.cont{
+    display: flex;
+}
+.list{
+    /* display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; */
+}
+</style>

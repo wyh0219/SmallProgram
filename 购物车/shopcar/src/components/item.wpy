@@ -1,0 +1,100 @@
+<template>
+    <view>
+        <checkbox-group @change="checkboxChange({{item.checked}})">
+            <label class="checkbox">
+                <checkbox value="" checked="{{item.checked}}" />
+                {{item.title}}
+            </label>
+            <view class="actions">
+                <text>{{item.price}}</text>
+                <view class="btn">
+                    <button @tap="changCount('reduce')">-</button>
+                    <text>{{item.count}}</text>
+                    <button @tap="changCount('add')">+</button>
+                </view>
+            </view>
+        </checkbox-group>
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import {connect} from 'wepy-redux';
+import {CHANGE_ALL_CHECKED,GET_SHOPCAR_DATA} from '../store/types/shopCar';
+@connect(
+    {
+        shopCarData(state){
+            return state.ShopStore.shopCarData
+        },
+        count(state){
+            return state.ShopStore.count
+        },
+        price(state){
+            return state.ShopStore.price
+        }
+    },
+    {
+        chanegAllChecked:CHANGE_ALL_CHECKED,
+        changeShopCarData:GET_SHOPCAR_DATA
+    }
+)
+export default class Item extends  wepy.component{
+    onReady(){
+        this.$emit('total')
+    }
+    props={
+        item:Object,
+        parIndex:Number,
+        index:Number,
+    }
+    methods={
+        //商品数量操作
+        changCount(type){
+            if(type==='add'){
+                this.shopCarData[this.parIndex].list[this.index].count++
+            }else{
+                this.shopCarData[this.parIndex].list[this.index].count--
+                if(this.shopCarData[this.parIndex].list[this.index].count<=1){
+                    this.shopCarData[this.parIndex].list[this.index].count=1;
+                }
+            }
+           
+            this.$emit('total')
+        },
+        //点击每一个商品
+        checkboxChange(checked){
+            this.shopCarData[this.parIndex].list[this.index].checked=!checked;
+            //使其商铺选中
+            this.$emit('shopCheckAll',this.shopCarData[this.parIndex].list.every(item=>item.checked))
+            //使其全选选中
+            this.$emit('checkAll',this.shopCarData.every(item=>item.checked))
+            //调用计算方法
+            this.$emit('total')
+        }
+    }
+}
+</script>
+
+<style>
+.actions{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.btn{
+    display: flex;
+    align-items: center;
+    margin-right: 50px;
+}
+.btn>text{
+    
+    margin: 0 5px;
+}
+button{
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    border: 0;
+}
+</style>

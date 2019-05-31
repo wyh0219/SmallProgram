@@ -1,0 +1,51 @@
+[{
+    "checked": false,
+    "id":1,
+    "shop":"bow旗舰店",
+    "list":[{
+      "title":"bow航世安卓手机蓝牙键盘",
+      "price":10,
+      "checked": false,
+      "count":1
+    },{
+      "title":"bow航世HB099安卓手机蓝牙键盘",
+      "price":20,
+      "checked": false,
+      "count":1
+    },{
+      "title":"bow航世HB099安卓手机蓝牙键盘",
+      "price":30,
+      "checked": false,
+      "count":1
+    }]
+  },{
+    "id":2,
+    "shop":"华为杭州旗舰店",
+    "checked": false,
+    "list":[{
+      "title":"华为智能手机1",
+      "price":1000,
+      "checked": false,
+      "count":1
+    },{
+      "title":"华为智能手机2",
+      "price":2000,
+      "checked": false,
+      "count":1
+    }]
+  },{
+      "id":3,
+      "shop":"蘑菇小象旗舰店",
+      "checked": false,
+      "list":[{
+        "title":"连衣裙1",
+        "price":90,
+        "checked": false,
+        "count":1
+      },{
+        "title":"打底裤2",
+        "price":40,
+        "checked": true,
+        "count":1
+      }]
+    }]

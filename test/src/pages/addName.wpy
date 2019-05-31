@@ -1,0 +1,77 @@
+<template>
+    <view class="box">
+        <view class="add" @tap="add">自定义报名</view>
+        <view class="duo">多项目报名</view>
+        <view class="huo">活动聚会</view>
+        <view class="tuan">团购拼单</view>
+    </view>
+    
+</template>
+
+<script>
+import wepy from 'wepy'
+export default class AddName extends wepy.page{
+
+    methods={
+        add(){
+            wx.navigateTo({
+                url:'/pages/signName'
+            })
+        }
+    }
+}
+</script>
+
+<style>
+.duo{
+     width: 100px;
+    height: 100px;
+    color: #fff;
+    text-align: center;
+    line-height: 100px;
+    border-radius: 5px;
+  margin:  0 5px;
+    background: skyblue
+}
+.huo{
+     width: 100px;
+    height: 100px;
+    color: #fff;
+    text-align: center;
+    line-height: 100px;
+    border-radius: 5px;
+  margin:  0 5px;
+    background: plum
+}
+.tuan{
+     width: 100px;
+    height: 100px;
+    color: #fff;
+    text-align: center;
+    line-height: 100px;
+    border-radius: 5px;
+  margin:  0 5px;
+    background: rgb(92, 235, 92)
+}
+page{
+    width: 100%;
+    height: 100%;
+}
+.box{
+    width: 100%;
+    height: 100%;
+    background: azure;
+    display: flex;
+    font-size: 30rpx;
+}
+.add{
+    width: 100px;
+    height: 100px;
+    background: purple;
+    color: #fff;
+    text-align: center;
+    line-height: 100px;
+    border-radius: 5px;
+  margin:  0 5px;
+}
+</style>

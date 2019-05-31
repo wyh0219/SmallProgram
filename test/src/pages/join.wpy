@@ -1,0 +1,109 @@
+<template>
+    <view class="box">
+        <view class="write">
+            <view class="msgs">姓名 <text style="color:red">*</text></view>
+            <input type="text" value="{{getData.msgObj.name}}"  @input="name" placeholder="请输入姓名" />
+            <!-- <input type="text" value="{{getData.msgObj.name}}" placeholder="请输入姓名" @input=myName" /> -->
+        </view>
+        <view class="write">
+            <view class="msgs">年龄 <text style="color:red">*</text></view>
+            <input type="text" value="{{getData.msgObj.old}}"  @input="old" placeholder="请输入年龄" />
+        </view>
+        <view class="write">
+            <view class="msgs">手机号 <text style="color:red">*</text></view>
+            <input type="text" value="{{getData.msgObj.phone}}"  placeholder="请输入手机号"  @input="phone">
+        </view>
+        <view class="write">
+            <view class="msgs">备注 <text style="color:red">*</text></view>
+            <input type="text" placeholder="请输入备注" />
+        </view>
+        <view>
+            <view class="submit" @tap="submit">提交</view>
+        </view>
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import {connect} from 'wepy-redux'
+import {CHANGE_MSG} from '../store/types/sign';
+@connect(
+    {
+        getData(state){
+            return state.signStore
+        }
+    },
+    {
+        changeMsg:CHANGE_MSG
+    }
+)
+
+export default class Join extends wepy.page {
+    data={
+        msg:{
+            name:"",
+            old:'',
+            phone:"",
+            time:""
+        },
+        list:[]
+    }
+    methods={
+        myName(e){
+            this.msg.name=e.detail.value
+        },
+        old(e){
+            this.msg.old=e.detail.value
+        },
+        phone(e){
+            this.msg.phone=e.detail.value
+        },
+        submit(){
+            this.msg.time=new Date().toLocaleString()
+            this.getData.joinList.push(this.msg);
+            let obj={
+                msg:this.msg,
+                list:this.getData.joinList,
+                count:this.getData.joinList.length
+            }
+            this.methods.changeMsg(obj)
+            wx.navigateTo({
+                url:"/pages/detail"
+            })
+        }
+    }
+}
+</script>
+
+<style>
+.submit{
+    width: 80%;
+    height: 40px;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 40px;
+    margin-top: 20px;
+    background: #1c7fcf;
+    color: #fff;
+}
+input{
+    height: 30px;
+}
+page{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.box{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.msgs{
+    width: 100%;
+    height: 35px;
+    line-height: 35px;
+    background: #95dbf7;
+}
+</style>

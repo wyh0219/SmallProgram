@@ -1,0 +1,9 @@
+export const CHANGE_START_DATE="CHANGE_START_DATE";
+export const CHANGE_END_DATE="CHANGE_END_DATE";
+export const CHANGE_PERSON="CHANGE_PERSON";
+export const CHANGE_CHHOSE_LIST="CHANGE_CHHOSE_LIST";
+export const ISSHOW="ISSHOW";
+export const TITLE="TITLE";
+export const MSG="MSG";
+export const CHANGE_MSG="CHANGE_MSG"
+export const COUNT="COUNT"

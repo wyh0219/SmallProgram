@@ -1,0 +1,302 @@
+<style>
+page{
+    width: 100%;
+    height: 100%;
+}
+.box{
+     width: 100%;
+    height: 100%;
+    background: azure;
+}
+input:nth-child(1){
+    height: 30px;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 5px;
+}
+.ipt{
+    width: 100%;
+    height: 50px;
+    background: #fff;
+}
+textarea{
+    height: 30px;
+}
+.timer{
+    margin-top: 20px;
+    width: 100%;
+    background: #fff;
+}
+.start{
+    display: flex;
+    height: 50px;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+}
+.end{
+     display: flex;
+    height: 50px;
+    align-items: center;
+    justify-content: space-between;
+}
+.person{
+    width: 100%;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.static{
+    margin: 10px 0;
+    background: #fff;
+}
+.sta{
+    line-height: 44px;
+    
+}
+.select{
+    width: 100%;
+    background: #fff;
+    margin: 10px 0;
+}
+.bt{
+    height: 35px;
+    line-height: 35px;
+    background: #ccc;
+}
+.choose{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    
+}
+.item{
+    box-sizing: border-box;
+    padding: 0 6px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    border: 1px solid #ccc;
+    margin-right: 6px;
+    margin-top: 4px;
+}
+.active{
+    border: 2px solid skyblue;
+}
+.actions{
+    width: 100%;
+    height: 300px;
+    background: #fff;
+    position: fixed;
+    left: 0;
+    bottom: 0px;
+}
+.actions>view{
+    width: 100%;
+    height: 70px;
+    text-align: center;
+    line-height: 70px;
+    border-bottom: 1px solid #ccc;
+}
+.list>text{
+    margin-right: 5px;
+}
+.msglist{
+    width: 100%;
+    background: #fff;
+    margin: 10px 0;
+}
+.msglist>view{
+    display: flex;
+    height: 40px;
+    align-items: center;
+    justify-content: space-between;
+    margin: 5px 0;
+}
+.btn{
+    background: skyblue;
+    color: #fff;
+}
+</style>
+<template>
+    <viewview class="box">
+        <view class="ipt">
+            <input type="text" value="{{getData.title}}" @input="title" placeholder="请输入标题">
+            <input type="text"  value="{{getData.msg}}" @input="msg" placeholder="请输入详细信息" />
+        </view>
+        <view class="timer">
+            <picker
+                mode="date"
+                value="{{startDate}}"
+                start="2019-04-01"
+                end="2020-01-01"
+                @change="startDateChange"
+            >
+                <view class="picker">
+                    <view class="start">
+                        <text>报名开始时间</text>
+                        <text>{{startDate}}</text>
+                    </view>
+                </view>
+            </picker>
+            <picker
+                mode="date"
+                value="{{endDate}}"
+                start="2019-04-01"
+                end="2020-01-01"
+                @change="endDateChange"
+            >
+                <view class="picker">
+                   <view class="end">
+                    <text>报名结束时间</text>
+                    <text>{{endDate}}</text>
+                </view>
+                </view>
+            </picker>       
+        </view>
+        <view class="person">
+           <text>报名人数</text>
+           <input type="text" value="{{person}}" placeholder="请填写报名人数" @input="getPerson" />
+        </view>
+        <view class="static">
+            <view class="sta">报名收费(费用最高50元)</view>
+            <view class="sta">报名费用0</view>
+            <view class="sta">
+                <view>活动开始时间/截止时间</view>
+                <view>活动地址</view>
+            </view>
+        </view>
+        <view class="select">
+            <view class="bt">已选项目(*代表必填)</view>
+            <view class="list">
+                <repeat for="{{list}}">
+    
+                    <text>{{item.require}} {{item.name}}</text>
+                </repeat>
+            </view>
+        </view>
+        <view class="choose">
+            <repeat for="{{getData.chooseList}}">
+                <view 
+                class="item {{item.check?'active':''}}"
+                @tap="select({{index}})"
+                >
+                    {{item.name}}
+                </view>
+            </repeat>
+        </view>
+        <view class="msglist">
+            <view>
+                <text>发起人信息</text>
+                <text>个人信息</text>
+            </view>
+            <view>
+                <text>发起人署名</text>
+                <text>温延会</text>
+            </view>
+            <view>
+                <text>手机号(必填)</text>
+                <text>17602223603</text>
+            </view>
+        </view>
+        <view>
+            <button class="btn" @tap="sure">确认</button>
+        </view>
+        <Actions wx:if="{{getData.isShow}}" list="{{list}}" />
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import {connect} from 'wepy-redux';
+import Actions from '../components/actions';
+import {CHANGE_START_DATE,CHANGE_END_DATE,CHANGE_PERSON,CHANGE_CHHOSE_LIST,ISSHOW,
+TITLE,MSG} from '../store/types/sign'
+@connect(
+    {
+        getData(state){
+            return state.signStore
+        },
+        startDate(state){
+            return state.signStore.startDate
+        },
+        endDate(state){
+            return state.signStore.endDate
+        },
+        person(state){
+            return state.signStore.person
+        },
+        list(state){
+            return state.signStore.list
+        },
+        
+    },
+    {
+        changeStartDate:CHANGE_START_DATE,
+        changeEndDate:CHANGE_END_DATE,
+        changePerson:CHANGE_PERSON,
+        changeChoose:CHANGE_CHHOSE_LIST,
+        changeShow:ISSHOW,
+        changeTitle:TITLE,
+        changeMsg:MSG
+    }
+)
+
+export default class SignName extends wepy.page {
+    components={
+        Actions
+    }
+    events={
+        hide(){
+            this.getData.isShow=false;
+            this.methods.changeShow(false)
+        }
+    }
+    methods={
+        title(e){
+            this.getData.title=e.detail.value;
+            this.methods.changeTitle(this.getData.title)
+        },
+        msg(e){
+            this.getData.msg=e.detail.value;
+            this.methods.changeMsg(this.getData.msg)
+        },
+        //改变开始时间
+        startDateChange(e){
+            this.startDate=e.detail.value;
+            this.methods.changeStartDate(this.startDate)
+        },
+        //改变结束时间
+        endDateChange(e){
+            this.endDate=e.detail.value;
+            this.methods.changeEndDate(this.endDate)
+        },
+        //填写人数
+        getPerson(e){
+            this.person=e.detail.value;
+            this.methods.changePerson(this.person)
+        },
+        //选择信息
+        select(i){
+            this.getData.isShow=true;
+            if(this.list.indexOf(this.getData.chooseList[i].name)==-1){
+                this.list.push(this.getData.chooseList[i])
+            }
+            this.methods.changeShow(true)
+            this.getData.chooseList[i].check=true;
+            let obj={
+                choose:this.getData.chooseList,
+                list:this.list
+            }
+            this.methods.changeChoose(obj)
+        },
+        sure(){
+            wx.navigateTo({
+                url:'/pages/detail'
+            })
+        }
+    }
+}
+</script>
+
+

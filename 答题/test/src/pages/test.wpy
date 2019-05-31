@@ -1,0 +1,185 @@
+<style>
+page{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.box{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column
+}
+.content{
+    flex: 1;
+    width: 100%;
+    overflow-y:auto ;
+}
+.actions{
+    width: 100%;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.count{
+    color: green;
+    margin-right: 6px;
+}
+.item{
+    margin: 4px 0;
+}
+label{
+    position: relative;
+}
+.cuo{
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: red;
+    color: #fff;
+    text-align: center;
+    line-height: 25px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.none{
+    display: none;
+}
+.block{
+    display: block
+}
+</style>
+<template>
+    <view class="box">
+        <view class="content">
+            <repeat for="{{allData}}">
+                <view wx:if="{{defaultIndex===index}}">
+                    <view class="title">
+                        <text class="count">第{{item.id}}题</text>
+                        <text>{{item.title}}</text>
+                    </view>
+                    <Item />
+                    <view class="answer">
+                        <radio-group class="radio-group" @change="radioChange">
+                            <repeat for="{{item.answer}}" item="val">
+                                <view class="item">
+                                    <label class="radio">
+                                        <radio value="{{val.test}}" checked="{{val.checked}}" />
+                                        {{val.test}}
+                                        <view wx:if="{{val.check}}" class="cuo">x</view>
+                                    </label>
+                                    
+                                </view>          
+                            </repeat>
+                            
+                        </radio-group>
+                        
+                    </view>
+                </view>
+            </repeat>
+        </view>
+        <view class="actions">
+            <button @tap="prev" disabled="{{disabledPrev}}">上一题</button>
+            <button @tap="submit" disabled="{{disabled}}">提交</button>
+            <button @tap="next" disabled="{{disabledNext}}">下一题</button>
+        </view>
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import Item from '../components/choose';
+export default class Test extends wepy.page {
+    onReady(){
+        wx.request({
+            url:"http://localhost:8080/data/data.json",
+            success:(res)=>{
+                this.allData=res.data;
+                this.$apply();
+            }
+        })
+    }
+    data={
+        defaultIndex:0,
+        allData:[],
+        total:0,
+        key:"",
+        timer:0,
+        disabled:false,
+        disabledNext:false,
+        disabledPrev:false,
+    }
+    methods={
+        radioChange(e,key){ 
+            if(this.allData[this.defaultIndex].key===e.detail.value){
+                this.key=e.detail.value
+                this.total+=20;  
+                this.allData[this.defaultIndex].answer.map(item=>{
+                    if(item.test===this.allData[this.defaultIndex].key){
+                        item.checked=true
+                    }
+                    item.check=false
+               }) 
+
+            }else{
+               this.allData[this.defaultIndex].answer.map(item=>{
+                   if(item.test===this.allData[this.defaultIndex].key){
+                        item.checked=true
+                   }
+                   if(item.test===e.detail.value){
+                       item.check=true;
+                       
+                   }else{
+                       item.check=false
+                   }
+               })
+            }
+        },
+        prev(){
+            this.defaultIndex--
+            if(this.defaultIndex<=0){
+                this.defaultIndex=0;
+                //this.disabledPrev=true;
+            }
+            
+        },
+        next(){
+            this.defaultIndex++;
+            if(this.defaultIndex>=this.allData.length-1){
+                this.defaultIndex=this.allData.length-1;
+            }
+        },
+        submit(){
+            let nowTime=new Date().getTime();
+            wx.getStorage({
+                key:"time",
+                success:(res)=>{
+                    this.timer=(nowTime-res.data);
+                    wx.showModal({
+                        title: '用时'+Math.floor(this.timer/1000/60)+'分:'+Math.ceil(this.timer/1000)+"秒,得分是："+this.total+"分",
+                        content: '您确定要提交试卷吗?',
+                        success:(res)=> {
+                            if (res.confirm) {
+                                this.disabled=true;
+                                this.disabledNext=true;
+                                this.disabledPrev=true;
+                            } else if (res.cancel) {
+                                console.log('用户点击取消')
+                            }
+                        }
+                    })
+                }
+            })
+            this.disabled=true;
+            
+        }
+    }
+    components={
+        Item
+    }
+}
+</script>
+
+
